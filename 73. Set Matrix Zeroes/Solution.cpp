@@ -1,32 +1,42 @@
 class Solution {
 public:
     void setZeroes(vector<vector<int>>& matrix) {
-        int m=matrix.size();
-        int n=matrix[0].size();
-        vector<int> row(matrix.size(),0);
-        vector<int> col(matrix[0].size(),0);
-        for(int i=0;i<m;i++){
-            for(int j=0;j<n;j++){
+        bool flag1=false,flag2=false;
+        for(int i=0;i<matrix.size();i++){
+            if(matrix[i][0]==0){
+                flag2=true;
+            }
+        }
+        for(int j=0;j<matrix[0].size();j++){
+            if(matrix[0][j]==0){
+                flag1=true;
+            }
+        }
+        for(int i=1;i<matrix.size();i++ ){
+            for(int j=1;j<matrix[0].size();j++){
                 if(matrix[i][j]==0){
-                    row[i]++;
-                    col[j]++;
+                    matrix[i][0]=0;
+                    matrix[0][j] = 0;
                 }
             }
         }
 
-        for(int i=0;i<m;i++){
-            if(row[i]>0){
-                for(int j=0;j<n;j++){
-                    matrix[i][j]=0;
+        for(int i=1;i<matrix.size();i++){
+           for(int j=1; j<matrix[0].size(); j++){
+                if(matrix[i][0] == 0 || matrix[0][j] == 0){
+                    matrix[i][j] = 0;
                 }
             }
         }
 
-        for(int i=0;i<n;i++){
-            if(col[i]>0){
-                for(int j=0;j<m;j++){
-                    matrix[j][i]=0;
-                }
+        if(flag1){
+            for(int j=0;j<matrix[0].size();j++){
+                matrix[0][j]=0;
+            }
+        }
+        if(flag2){
+            for(int i=0;i<matrix.size();i++){
+                matrix[i][0]=0;
             }
         }
     }
