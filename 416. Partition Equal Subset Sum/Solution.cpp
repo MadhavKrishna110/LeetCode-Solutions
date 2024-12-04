@@ -1,31 +1,30 @@
 class Solution {
 public:
     bool canPartition(vector<int>& nums) {
+        int n=nums.size();
         int sum=0;
-        for(int i=0;i<nums.size();i++){
+        for(int i=0;i<n;i++){
             sum+=nums[i];
         }
         if(sum%2!=0) return false;
-        int subsetSum=sum/2;
-        int n=nums.size();
-        vector<vector<bool>> dp(n+1,vector<bool>(subsetSum+1));
-       
-        for(int i=0;i<=n;i++){
-            
-            for(int j=0;j<=subsetSum;j++){
-                if(j==0||i==0){
-                    dp[i][j]=false;
-                } else if(nums[i-1]<j){
-                    dp[i][j] = dp[i-1][j-nums[i-1]] || dp[i-1][j];
-                } else if(nums[i-1]>j) {
-                    dp[i][j] = dp[i-1][j];
-                } else {
-                    dp[i][j]=true;
+        int target = sum/2;
+        vector<vector<bool>> dp(n,vector<bool>(target+1,false));
+        for(int i=0;i<n;i++){
+            dp[i][0] = true;
+        }
+        if(nums[0]<=target){
+            dp[0][nums[0]] = true;
+        }
+        for(int i=1;i<n;i++){
+            for(int j=1;j<=target;j++){
+                bool notTake = dp[i-1][j];
+                bool take = false;
+                if(nums[i]<=j){
+                    take = dp[i-1][j-nums[i]];
                 }
+                dp[i][j] = notTake || take;
             }
         }
-
-        return dp[n][subsetSum];
-
+        return dp[n-1][target];
     }
 };
