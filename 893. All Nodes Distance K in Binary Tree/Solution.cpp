@@ -38,7 +38,7 @@ public:
             int dist = qt.front().second;
             qt.pop();
             cout<<node->val<<"-"<<dist<<endl;
-           if(!visited[node->val]){
+           
                 if(node->left && !visited[node->left->val]){
                     qt.push({node->left,dist+1});
                 }
@@ -48,7 +48,7 @@ public:
                 if(parentMap.find(node)!=parentMap.end() && !visited[parentMap[node]->val]){
                     qt.push({parentMap[node],dist+1});
                 }
-           }
+           
            visited[node->val]=1;
            if(dist==k){
             ans.push_back(node->val);
