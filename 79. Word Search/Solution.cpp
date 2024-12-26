@@ -1,30 +1,34 @@
 class Solution {
 public:
-    bool exist(vector<vector<char>>& board, string word) {
-       int m=board.size();
-        int n= board[0].size();
-        for(int i=0;i<m;i++){
-            for(int j=0;j<n;j++){
-                vector<vector<int>> visited(m,vector<int> (n,0));
-                bool res = backtrack(i,j,0,word,visited,board);
-                if(res) return true;
-            }
+    bool fun(int i,int j,int idx,string word,vector<vector<char>>& board,vector<vector<int>>& visited){
+        int m = board.size();
+        int n = board[0].size();
+        if(idx==word.size()) return true;
+        if(i<0 || i>=m || j<0 || j>=n) return false;
+
+        if(board[i][j]==word[idx] && !visited[i][j]){
+          
+            visited[i][j]=1;
+            bool a = fun(i+1,j,idx+1,word,board,visited);
+            bool b = fun(i-1,j,idx+1,word,board,visited);
+            bool c = fun(i,j+1,idx+1,word,board,visited);
+            bool d = fun(i,j-1,idx+1,word,board,visited);
+            visited[i][j]=0;
+            return a||b||c||d;
+
         }
+
         return false;
     }
-
-    bool backtrack(int i,int j, int k, string word,vector<vector<int>>& visited,vector<vector<char>>& board ){
-        if(k==word.length()) return true;
-        int m=board.size();
-        int n= board[0].size();
-        if(i<0 || i>=m || j<0 || j>=n){
-            return false;
-        }
-        if(!visited[i][j] && board[i][j]==word[k]){
-            visited[i][j]=1;
-            bool res = backtrack(i+1,j,k+1,word,visited,board) || backtrack(i-1,j,k+1,word,visited,board) || backtrack(i,j+1,k+1,word,visited,board) || backtrack(i,j-1,k+1,word,visited,board);
-            if(res) return true;
-            visited[i][j] = 0;
+    bool exist(vector<vector<char>>& board, string word) {
+        int m = board.size();
+        int n = board[0].size();
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                vector<vector<int>> visited(m,vector<int>(n,0));
+                bool ans = fun(i,j,0,word,board,visited);
+                if(ans) return true;
+            }
         }
         return false;
     }
