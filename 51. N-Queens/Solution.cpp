@@ -1,53 +1,54 @@
 class Solution {
-    bool isSafe(int row,int col,vector<string> board,int n){
-
-        int dupRow = row;
-        int dupCol = col;
-
-        while(row>=0 && col>=0){
-            if(board[row][col]=='Q') return false;
-            row--;
-            col--;
+public:
+    bool isQueenSafe(int row,int col,vector<string> &board){
+       // cout<<row<<"-"<<col<<endl;
+        int x=row,y=col;
+        while(x>=0 && y>=0){
+            if(board[x][y]=='Q') return false;
+            x--;
+            y--;
+        }
+        x=row;
+        y=col;
+        while(y>=0){
+            if(board[x][y]=='Q') return false;
+            y--;
         }
 
-        row=dupRow;
-        col=dupCol;
-        while(col>=0){
-            if(board[row][col]=='Q') return false;
-            col--;
-        }
-
-        col= dupCol;
-        while(row<n && col>=0){
-            if(board[row][col]=='Q') return false;
-            row++;
-            col--;
+        x=row,y=col;
+        while(x<board.size() && y>=0){
+            if(board[x][y]=='Q') return false;
+            x++;
+            y--;
         }
         return true;
     }
-public:
-    void fun(int col,int n,vector<string> &board,vector<vector<string>> &result){
+    void solve(int col,vector<string> &board,vector<vector<string>> &res,int n){
         if(col==n){
-            result.push_back(board);
+            res.push_back(board);
             return;
         }
 
         for(int row=0;row<n;row++){
-            if(isSafe(row,col,board,n)){
-                board[row][col]='Q';
-                fun(col+1,n,board,result);
-                board[row][col]='.';
+            if(isQueenSafe(row,col,board)){
+                cout<<row<<"-"<<col<<endl;
+                board[row][col] = 'Q';
+                solve(col+1,board,res,n);
+                board[row][col] = '.';
             }
         }
     }
     vector<vector<string>> solveNQueens(int n) {
-        vector<vector<string>> result;
+        vector<vector<string>> res;
         vector<string> board(n);
         string s(n,'.');
         for(int i=0;i<n;i++){
             board[i]=s;
         }
-        fun(0,n,board,result);
-        return result;
+        solve(0,board,res,n);
+        return res;
+
+
+
     }
 };
