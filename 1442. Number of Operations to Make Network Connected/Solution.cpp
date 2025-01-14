@@ -1,56 +1,57 @@
-// class Solution {
-// public:
-//     void dfs(int idx,vector<vector<int>> adjList,vector<bool> &visited){
-//         visited[idx]=true;
-//         for(int i: adjList[idx]){
-//             if(!visited[i]){
-//                 dfs(i,adjList,visited);
-//             }
-//         }
-//     }
-//     int makeConnected(int n, vector<vector<int>>& connections) {
-//         if(connections.size()<n-1) return -1;
-//         vector<vector<int>> adj(n);
-//        for(auto c : connections){
-//             adj[c[0]].push_back(c[1]);
-//             adj[c[1]].push_back(c[0]);
-//         }
-//         vector<bool> visited(n,false);
-//         int components=0;
-//         for(int i=0;i<n;i++){
-//             if(!visited[i]){
-//                 dfs(i,adj,visited);
-//                 components++;
-//             }
-//         }
-//         return components-1;
-//     }
-// };
-
 class Solution {
-public:
-    void dfs(vector<vector<int>> &adj, vector<bool> &visited, int src){
-        visited[src] = true;
-        for(int i : adj[src])
-            if(!visited[i])
-                dfs(adj, visited, i);
-    }
-
-    int makeConnected(int n, vector<vector<int>>& connections) {
-        if(connections.size() < n - 1) return -1;
-        vector<vector<int>> adj(n);
-        for(auto c : connections){
-            adj[c[0]].push_back(c[1]);
-            adj[c[1]].push_back(c[0]);
+    class DisjointSet{
+        vector<int> parent,size;
+        public:
+        DisjointSet(int n){
+            parent = vector<int>(n+1);
+            for(int i=0;i<=n;i++){
+                parent[i]=i;
+            }
+            size = vector<int>(n+1,1);
         }
 
-        vector<bool> visited(n, false);
-        int components = 0;
-        for(int i=0; i<n; i++)
-            if(!visited[i]){
-                dfs(adj, visited, i);
+        int findUPar(int node){
+            if(parent[node]==node){
+                return node;
+            }
+            cout<<node<<"-"<<parent[node]<<endl;
+            return parent[node] = findUPar(parent[node]);
+        }
+
+        void unionBySize(int x, int y){
+            int ulp_x = findUPar(x);
+            int ulp_y = findUPar(y);
+
+            if(ulp_x==ulp_y) return;
+
+            if(size[ulp_x]<size[ulp_y]){
+                parent[ulp_x] = ulp_y;
+                size[ulp_y]+=size[ulp_x];
+            } else {
+                parent[ulp_y]=parent[ulp_x];
+                size[ulp_x] += size[ulp_y];
+            }
+        }
+    };
+public:
+    int makeConnected(int n, vector<vector<int>>& connections) {
+        //if(connections.size()<n-1) return -1;
+        DisjointSet ds(n);
+        int cntExtras=0;
+        for(int i=0;i<connections.size();i++){
+            if(ds.findUPar(connections[i][0])==ds.findUPar(connections[i][1])){
+                cntExtras++;
+            }
+            ds.unionBySize(connections[i][0],connections[i][1]);
+            ds.unionBySize(connections[i][1],connections[i][0]);
+        }
+        int components=0;
+        for(int i=0;i<n;i++){
+            if(ds.findUPar(i)==i){
                 components++;
             }
-        return components - 1;
+        }
+        return cntExtras>=components-1?components-1:-1;
+
     }
 };
