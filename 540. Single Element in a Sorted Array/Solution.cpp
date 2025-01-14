@@ -19,6 +19,6 @@ public:
             }
         }
         cout<<start<<"-"<<end<<endl;
-        return nums[start-1];
+        return nums[end];
     }
 };
