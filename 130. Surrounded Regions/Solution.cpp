@@ -1,27 +1,14 @@
 class Solution {
 public:
-    bool isValid(int i,int j,int m,int n){
-        if(i<0||j<0||i>=m||j>=n){
-            return false;
+    void dfs(int i,int j,vector<vector<char>>& board,vector<vector<int>>& visited){
+        if(i<0 || i>=board.size() || j<0 || j>=board[0].size() || visited[i][j] || board[i][j]=='X'){
+            return;
         }
-        return true;
-    }
-    void dfs(int i,int j,vector<vector<int>>& visited,vector<vector<char>>& board){
-        int m = board.size();
-        int n = board[0].size();
         visited[i][j]=1;
-        if(isValid(i+1,j,m,n) && !visited[i+1][j] && board[i+1][j]=='O'){
-            dfs(i+1,j,visited,board);
-        }
-        if(isValid(i-1,j,m,n) && !visited[i-1][j] && board[i-1][j]=='O'){
-            dfs(i-1,j,visited,board);
-        }
-        if(isValid(i,j+1,m,n) && !visited[i][j+1] && board[i][j+1]=='O'){
-            dfs(i,j+1,visited,board);
-        }
-        if(isValid(i,j-1,m,n) && !visited[i][j-1] && board[i][j-1]=='O'){
-            dfs(i,j-1,visited,board);
-        }
+        dfs(i-1,j,board,visited);
+        dfs(i+1,j,board,visited);
+        dfs(i,j+1,board,visited);
+        dfs(i,j-1,board,visited);
     }
     void solve(vector<vector<char>>& board) {
         int m = board.size();
@@ -29,29 +16,33 @@ public:
         vector<vector<int>> visited(m,vector<int>(n,0));
         for(int i=0;i<m;i++){
             if(board[i][0]=='O'){
-                dfs(i,0,visited,board);
+                cout<<i<<"-"<<0<<endl;
+                dfs(i,0,board,visited);
             }
             if(board[i][n-1]=='O'){
-                dfs(i,n-1,visited,board);
+                cout<<i<<"-"<<n-1<<endl;
+                dfs(i,n-1,board,visited);
             }
         }
-         for(int i=0;i<n;i++){
-            if(board[0][i]=='O'){
-                dfs(0,i,visited,board);
+
+        for(int j=0;j<n;j++){
+            if(board[0][j]=='O'){
+                cout<<0<<"-"<<j<<endl;
+                dfs(0,j,board,visited);
             }
-            if(board[m-1][i]=='O'){
-                dfs(m-1,i,visited,board);
+            if(board[m-1][j]=='O'){
+                cout<<m-1<<"-"<<j<<endl;
+                dfs(m-1,j,board,visited);
             }
         }
 
         for(int i=0;i<m;i++){
             for(int j=0;j<n;j++){
-                if(visited[i][j]==1){
-                    board[i][j]='O';
-                } else {
+                if(visited[i][j]==0 && board[i][j]=='O'){
                     board[i][j]='X';
                 }
             }
         }
+        return ;
     }
 };
