@@ -29,8 +29,8 @@ public:
         if(root==NULL) return 0;
         if(root->left==NULL && root->right==NULL) return root->val;
         int maxm = INT_MIN;
-        int sum = pathSum(root,maxm);
-        return max(maxm,sum);
+        pathSum(root,maxm);
+        return maxm;
         
     }
 };
