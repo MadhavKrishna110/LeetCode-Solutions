@@ -8,38 +8,46 @@
  * };
  */
 class Solution {
+
 public:
-    void getPath(TreeNode* root,TreeNode* p, TreeNode* q,vector<TreeNode*> &res,vector<vector<TreeNode*>> &ans){
+    void dfs(TreeNode* root,int level,vector<int> &depth,vector<TreeNode*> &node){
         if(root==NULL) return;
-        res.push_back(root);
-        if(root==p || root==q){ 
-            ans.push_back(res);     
-        } 
-        getPath(root->left,p,q,res,ans);
-        getPath(root->right,p,q,res,ans);
-        res.pop_back();
+        if(!root->left && !root->right){
+             depth.push_back(level);
+        node.push_back(root);
+        return;
+        }
 
-
+        depth.push_back(level);
+        node.push_back(root);
+        dfs(root->left,level+1,depth,node);
+        depth.push_back(level);
+        node.push_back(root);
+        dfs(root->right,level+1,depth,node);
+        depth.push_back(level);
+        node.push_back(root);
     }
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        vector<vector<TreeNode*>> ans;
-        vector<TreeNode*> res;
-        getPath(root,p,q,res,ans);
-        int i=0;
-        while(i<ans.size()){
-            int j=0;
-            while(j<ans[i].size()){
-                cout<<ans[i][j]->val<<" ";
-                j++;
+        vector<int> depthArr;
+        vector<TreeNode*> nodeArr;
+        dfs(root,0,depthArr,nodeArr);
+        int idx1=-1,idx2=-1;
+        for(int i=0;i<nodeArr.size();i++){
+            if(idx1==-1 && (nodeArr[i]==p || nodeArr[i]==q)){
+                idx1=i;
             }
-            cout<<endl;
-            i++;
+            if(idx1!=-1 && (nodeArr[i]==p || nodeArr[i]==q)){
+                idx2=i;
+            }
         }
-        cout<<ans.size()<<endl;
-        int temp=0;
-        while(temp<min(ans[0].size(),ans[1].size()) && ans[0][temp]==ans[1][temp]){
-            temp++;
+        int minDepth=INT_MAX,idx=-1;
+        for(int j=idx1;j<=idx2;j++){
+            cout<<nodeArr[j]->val<<"-"<<depthArr[j]<<endl;
+            if(depthArr[j]<minDepth){
+                minDepth = depthArr[j];
+                idx = j;
+            }
         }
-        return ans[0][temp-1];
+        return nodeArr[idx];
     }
 };
