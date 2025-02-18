@@ -1,34 +1,40 @@
 class Solution {
 public:
-    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
-        int n = numCourses;
-        vector<int> indegree(n,0);
+    bool canFinish(int n, vector<vector<int>>& pre) {
+        // prerequisites[i] = [ai, bi] indicates that you must take course bi first if
+        // you want to take course ai => Dependency is on bi => bi ki indegree badhegi.
+        // => There is an edge from ai to bi. (v equals n here)
+
         vector<vector<int>> adj(n);
-        for(int i=0;i<prerequisites.size();i++){
-            adj[prerequisites[i][1]].push_back(prerequisites[i][0]);
-            indegree[prerequisites[i][0]]++;
+        for(int i=0;i<pre.size();i++){
+            adj[pre[i][0]].push_back(pre[i][1]);
         }
 
-        queue<int> q;
+        vector<int> indegree(n+1,0);
         for(int i=0;i<n;i++){
-            if(indegree[i]==0){
-                q.push(i);
-            }
+            for(auto child: adj[i])
+                indegree[child]++;
         }
-        vector<int> res;
+        
+        queue<int> q;
+        for(int i=0;i<n;i++)
+            if(indegree[i]==0)
+                q.push(i);
 
         while(!q.empty()){
-            int node=q.front();
-            q.pop();
-            res.push_back(node);
-            for(int i=0;i<adj[node].size();i++){
-                indegree[adj[node][i]]--;
-                if(indegree[adj[node][i]]==0){
-                    q.push(adj[node][i]);
-                }
+            int curr=q.front();
+            for(auto child:adj[curr]){
+                indegree[child]--;
+                if(indegree[child]==0)
+                    q.push(child);
             }
+            q.pop();
         }
-        if(res.size()==n) return true;
-        return false;
+
+        for(int i=0;i<n;i++){
+            if(indegree[i]!=0)
+                return false;
+        }
+        return true;
     }
 };
