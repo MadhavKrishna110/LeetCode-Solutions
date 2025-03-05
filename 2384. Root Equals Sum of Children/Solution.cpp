@@ -17,7 +17,14 @@ public:
         if(root->left==NULL&&root->right==NULL)
             return true;
 
-        return checkTree(root->left) && checkTree(root->right) && 
-            (root->val==root->left->val+root->right->val);
+        int sum=0;
+        if(root->left!=NULL)
+            sum+=root->left->val;
+        if(root->right!=NULL)
+            sum+=root->right->val;
+        return (root->val==sum && checkTree(root->left) && checkTree(root->right));
+
+        // return checkTree(root->left) && checkTree(root->right) && 
+        //     (root->val==root->left->val+root->right->val);
     }
 };
